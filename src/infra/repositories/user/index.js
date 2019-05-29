@@ -1,7 +1,7 @@
-const { toEntity } = require('./transforms/user')
-const { comparePassword } = require('../encryption')
+const { toEntity } = require('./transform')
+const { comparePassword } = require('../../encryption')
 
-module.exports = (model) => {
+module.exports = ({ model }) => {
   const getAll = (...args) =>
     model.findAll(...args).then((entity) =>
       entity.map((data) => {
@@ -18,7 +18,7 @@ module.exports = (model) => {
       .catch((error) => { throw new Error(error) })
 
   const findById = (...args) =>
-    model.findById(...args)
+    model.findByPk(...args)
       .then(({ dataValues }) => toEntity(dataValues))
       .catch((error) => { throw new Error(error) })
 

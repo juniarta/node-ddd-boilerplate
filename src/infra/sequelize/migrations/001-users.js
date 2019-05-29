@@ -35,7 +35,7 @@ module.exports = {
       },
       verificationCode: {
         type: Sequelize.STRING,
-        defaultValue: 0
+        defaultValue: ''
       },
       isVerified: {
         type: Sequelize.INTEGER,
@@ -48,6 +48,10 @@ module.exports = {
       createdBy: {
         type: Sequelize.UUID,
         allowNull: false
+      },
+      updatedBy: {
+        type: Sequelize.UUID,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,

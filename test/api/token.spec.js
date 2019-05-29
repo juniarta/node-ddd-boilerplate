@@ -1,18 +1,17 @@
 /* eslint-env mocha */
-const { repository } = require('test/factory')
-const userRepository = require('src/infra/repositories/user')
+const {
+  userRepository
+} = app.resolve('repository')
 
 describe('Routes: Login', () => {
   const BASE_URI = `/api/${config.version}`
-  const UserModel = repository('users')
-  const UserUseCase = UserModel(userRepository)
 
   beforeEach((done) => {
     // we need to add user before we can request our token
-    UserUseCase
-      .destroy({where: {}})
+    userRepository
+      .destroy({ where: {} })
       .then(() =>
-        UserUseCase.create({
+        userRepository.create({
           firstName: 'Test',
           lastName: 'Dev',
           middleName: 'Super Dev',

@@ -8,9 +8,9 @@ module.exports = () => {
   // swagger definition
   const swaggerDefinition = {
     info: {
-      title: 'Payroll API Explorer',
+      title: 'Node DDD API Explorer',
       version: '1.0.0',
-      description: 'Available REST Endpoints of Payroll RESTful API'
+      description: 'Available REST Endpoints of Node DDD RESTful API'
     },
     host: `${process.env.API_SWAGGER}:${process.env.PORT}/api/${process.env.APP_VERSION}`,
     basePath: '/',
@@ -36,7 +36,7 @@ module.exports = () => {
   const swaggerSpec = swaggerJSDoc(options)
   /**
    * @swagger
-   * response:
+   * responses:
    *   Unauthorized:
    *     description: Unauthorized
    *   BadRequest:
@@ -57,7 +57,7 @@ module.exports = () => {
    *         description: API Status
    */
   router.get('/', (req, res) => {
-    res.status(Status.OK).json({status: 'API working'})
+    res.status(Status.OK).json({ status: 'API working' })
   })
 
   router.get('/swagger.json', (req, res) => {

@@ -1,5 +1,5 @@
-const { createContainer, Lifetime } = require('awilix')
-
+const { createContainer, asValue, asFunction } = require('awilix')
+// you can do this
 const app = require('./app')
 const server = require('./interfaces/http/server')
 const router = require('./interfaces/http/router')
@@ -10,22 +10,24 @@ const database = require('./infra/database')
 const jwt = require('./infra/jwt')
 const response = require('./infra/support/response')
 const date = require('./infra/support/date')
+const repository = require('./infra/repositories')
 
 const container = createContainer()
 
 // SYSTEM
 container
-  .registerFunction({
-    app: [app, { lifetime: Lifetime.SINGLETON }],
-    server: [server, { lifetime: Lifetime.SINGLETON }],
-    router: [router, { lifetime: Lifetime.SINGLETON }],
-    logger: [logger, { lifetime: Lifetime.SINGLETON }],
-    database: [database, { lifetime: Lifetime.SINGLETON }],
-    auth: [auth, { lifetime: Lifetime.SINGLETON }],
-    jwt: [jwt, { lifetime: Lifetime.SINGLETON }],
-    response: [response, { lifetime: Lifetime.SINGLETON }],
-    date: [date, { lifetime: Lifetime.SINGLETON }]
+  .register({
+    app: asFunction(app).singleton(),
+    server: asFunction(server).singleton(),
+    router: asFunction(router).singleton(),
+    logger: asFunction(logger).singleton(),
+    database: asFunction(database).singleton(),
+    auth: asFunction(auth).singleton(),
+    jwt: asFunction(jwt).singleton(),
+    response: asFunction(response).singleton(),
+    date: asFunction(date).singleton(),
+    config: asValue(config),
+    repository: asFunction(repository).singleton()
   })
-  .registerValue({ config })
 
 module.exports = container

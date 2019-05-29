@@ -1,20 +1,21 @@
 /* eslint-env mocha */
-const { repository } = require('test/factory')
-const userRepository = require('src/infra/repositories/user')
 
-describe('Routes: GET Users', () => {
+const {
+  userRepository
+} = app.resolve('repository')
+
+describe('Routes: GET UsersEntity', () => {
   const BASE_URI = `/api/${config.version}`
-  const UserModel = repository('users')
-  const UserUseCase = UserModel(userRepository)
+
   const signIn = app.resolve('jwt').signin()
   let token
 
   beforeEach((done) => {
     // we need to add user before we can request our token
-    UserUseCase
-      .destroy({where: {}})
+    userRepository
+      .destroy({ where: {} })
       .then(() =>
-        UserUseCase.create({
+        userRepository.create({
           firstName: 'Test',
           lastName: 'Dev',
           middleName: 'Super Dev',
@@ -25,7 +26,7 @@ describe('Routes: GET Users', () => {
           createdBy: '48e40a9c-c5e9-4d63-9aba-b77cdf4ca67b'
         })
       ).then(() =>
-        UserUseCase.create({
+        userRepository.create({
           firstName: 'John',
           lastName: 'doe',
           middleName: 'JohnDoe',
@@ -50,21 +51,21 @@ describe('Routes: GET Users', () => {
   describe('Should return users', () => {
     it('should return all users', (done) => {
       request.get(`${BASE_URI}/users`)
-      .set('Authorization', `JWT ${token}`)
-      .expect(200)
-      .end((err, res) => {
-        expect(res.body.data).to.have.length(2)
-        done(err)
-      })
+        .set('Authorization', `JWT ${token}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.data).to.have.length(2)
+          done(err)
+        })
     })
 
     it('should return unauthorized if no token', (done) => {
       request.get(`${BASE_URI}/users`)
-      .expect(401)
-      .end((err, res) => {
-        expect(res.text).to.equals('Unauthorized')
-        done(err)
-      })
+        .expect(401)
+        .end((err, res) => {
+          expect(res.text).to.equals('Unauthorized')
+          done(err)
+        })
     })
   })
 })

@@ -1,15 +1,11 @@
 /* eslint-env mocha */
-const { repository } = require('test/factory')
-const userRepository = require('src/infra/repositories/user')
-const companyRepository = require('src/infra/repositories/company')
+const {
+  userRepository,
+  companyRepository
+} = app.resolve('repository')
 
 describe('Routes: DELETE Companies', () => {
   const BASE_URI = `/api/${config.version}`
-  const UserModel = repository('users')
-  const UserUseCase = UserModel(userRepository)
-
-  const CompanyModel = repository('companies')
-  const CompanyUseCase = CompanyModel(companyRepository)
 
   const signIn = app.resolve('jwt').signin()
   let token
@@ -17,37 +13,37 @@ describe('Routes: DELETE Companies', () => {
 
   beforeEach((done) => {
     // we need to add user before we can request our token
-    UserUseCase
-     .destroy({where: {}})
-     .then(() =>
-       UserUseCase.create({
-         firstName: 'Test',
-         lastName: 'Dev',
-         middleName: 'Super Dev',
-         email: 'testdev1@gmail.com',
-         password: 'pass',
-         roleId: 1,
-         isDeleted: 0,
-         createdBy: '48e40a9c-c5e9-4d63-9aba-b77cdf4ca67b'
-       })
-     ).then((user) => {
-       token = signIn({
-         id: user.id,
-         firstName: user.firstName,
-         lastName: user.lastName,
-         middleName: user.middleName,
-         email: user.email
-       })
-       done()
-     })
+    userRepository
+      .destroy({ where: {} })
+      .then(() =>
+        userRepository.create({
+          firstName: 'Test',
+          lastName: 'Dev',
+          middleName: 'Super Dev',
+          email: 'testdev1@gmail.com',
+          password: 'pass',
+          roleId: 1,
+          isDeleted: 0,
+          createdBy: '48e40a9c-c5e9-4d63-9aba-b77cdf4ca67b'
+        })
+      ).then((user) => {
+        token = signIn({
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          middleName: user.middleName,
+          email: user.email
+        })
+        done()
+      })
   })
 
   describe('Should DELETE companies', () => {
     beforeEach((done) => {
-      CompanyUseCase
-        .destroy({where: {}})
+      companyRepository
+        .destroy({ where: {} })
         .then(() =>
-          CompanyUseCase.create({
+          companyRepository.create({
             'name': 'My Company Test',
             'address': '1705 German Hollow',
             'contact': '658.412.5787',
@@ -66,22 +62,22 @@ describe('Routes: DELETE Companies', () => {
 
     it('should delete company', (done) => {
       request.delete(`${BASE_URI}/companies/${companyId}`)
-      .set('Authorization', `JWT ${token}`)
-      .expect(200)
-      .end((err, res) => {
-        console.log(res.body)
-        expect(res.body.success).to.eql(true)
-        done(err)
-      })
+        .set('Authorization', `JWT ${token}`)
+        .expect(200)
+        .end((err, res) => {
+          console.log(res.body)
+          expect(res.body.success).to.eql(true)
+          done(err)
+        })
     })
 
     it('should return unauthorized if no token', (done) => {
       request.delete(`${BASE_URI}/companies/${companyId}`)
-      .expect(401)
-      .end((err, res) => {
-        expect(res.text).to.equals('Unauthorized')
-        done(err)
-      })
+        .expect(401)
+        .end((err, res) => {
+          expect(res.text).to.equals('Unauthorized')
+          done(err)
+        })
     })
   })
 })
